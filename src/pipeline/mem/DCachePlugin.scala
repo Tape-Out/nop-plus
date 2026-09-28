@@ -538,7 +538,7 @@ class DCachePlugin(config: MyCPUConfig) extends Plugin[MemPipeline] {
           arbitration.haltItself.set()
           val r = udBus.r
           r.ready.set()
-          when(r.valid && r.payload.last) {
+          when(r.fire && r.payload.last) {
             storedWord := r.payload.data
             goto(finishU)
           }
