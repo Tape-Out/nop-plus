@@ -308,10 +308,8 @@ class MyCPU(config: MyCPUConfig) extends Component {
 
     crossbar.io.cpuBus >> io.axi
 
-    // udBus: uncached DBus
-    val axiBuffer = new NOP.peripheral.AxiBuffer(config.axiConfig)
-    cpu.io.udBus <> axiBuffer.io.in_axi
-    axiBuffer.io.out_axi >> crossbar.io.udBus
+    // Keep uncached transactions on the same AXI path as the other CPU reads.
+    cpu.io.udBus <> crossbar.io.udBus
 
     // Debug Area
     config.weDebug generate {
