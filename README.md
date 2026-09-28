@@ -20,13 +20,26 @@ For the build submitted to the final (the `cpucfg` fix plus the timing patch, be
 
 ## Building
 
-JDK 11, sbt 1.9.7 (pinned in `project/build.properties`), Scala 2.12.16 and SpinalHDL 1.8.1:
+JDK 17 or older (Scala 2.12.16 crashes on newer ones; set `JAVA` to pick one), sbt 1.9.7 (pinned in `project/build.properties`), Scala 2.12.16 and SpinalHDL 1.8.1. Without sbt installed, `gen.sh` fetches that version's launcher from Maven Central:
 
 ```console
 $ ./gen.sh      # sbt "runMain NOP.Main", then the timing patch: build/core_top.v
 ```
 
-Synthesis needs Vivado for the multiplier IP (`xilinx_ip/multiplier.xci`) and the XPM memories. The generated file carries a date line, so compare outputs from the fifth line on.
+The generated Verilog instantiates two Xilinx primitives, the `multiplier` IP (`xilinx_ip/multiplier.xci`) and `xpm_memory_sdpram`. [`vendor/`](vendor) has behavioural models of both, limited to the configurations the core uses, so it simulates and synthesises without Vivado; a Vivado build leaves `vendor/` out and uses the real ones.
+
+Two runs are not byte-identical: besides the date line, SpinalHDL may renumber the `when_*` signals of some plugins. The timing patch is applied with zero fuzz, so a shifted context fails instead of landing in the wrong place.
+
+## With XiRang
+
+Part of the [Tape-Out](https://github.com/Tape-Out) IP library, wired up by [`xirang`](https://github.com/Tape-Out/xirang) as a black box. The top is `core_top`, with an AXI3 manager port, eight interrupt lines and the write-back trace chiplab's difftest reads.
+
+```console
+$ ran run nop-plus spinal     # gen.sh
+$ ran test nop-plus           # elaborate and check the declaration
+```
+
+The gate elaborates the design; it does not run programs on it yet. The configuration is fixed in `src/MyCPUConfig.scala`, and the three hundred or so other difftest outputs are not declared as endpoints.
 
 ## License
 

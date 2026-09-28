@@ -1,0 +1,104 @@
+name: nop-plus
+version: 0.1.0
+spec: '0.1'
+kind: ip
+lang: spinal
+identity:
+  slug: nop-plus-tapeout-foreign
+  display_name: NOP+
+  summary: NOP, a five-issue out-of-order LoongArch32 Reduced core in SpinalHDL, as we improved it for the NSCSCC 2026 final, taken as a black box.
+  category: processor
+  subcategories:
+  - loongarch
+  ip_family: nop
+  integration_profile: []
+  maturity: planned
+contract:
+  version: 1
+  ctrl:
+    shape: none
+    aw: 32
+    dw: 32
+emit:
+- kind: foreign
+  lang: verilog
+  top: core_top
+  setup: spinal
+  rtl:
+  - build/core_top.v
+  - vendor/xpm_memory_sdpram.v
+  - vendor/multiplier.v
+  clock:
+    port: aclk
+  reset:
+    port: aresetn
+    active: low
+    sync: true
+  ports:
+  - endpoint: mem
+    kind: transaction
+    role: manager
+    profile: axi3
+    map:
+      arid: arid
+      araddr: araddr
+      arlen: arlen
+      arsize: arsize
+      arburst: arburst
+      arlock: arlock
+      arcache: arcache
+      arprot: arprot
+      arvalid: arvalid
+      arready: arready
+      rid: rid
+      rdata: rdata
+      rresp: rresp
+      rlast: rlast
+      rvalid: rvalid
+      rready: rready
+      awid: awid
+      awaddr: awaddr
+      awlen: awlen
+      awsize: awsize
+      awburst: awburst
+      awlock: awlock
+      awcache: awcache
+      awprot: awprot
+      awvalid: awvalid
+      awready: awready
+      wid: wid
+      wdata: wdata
+      wstrb: wstrb
+      wlast: wlast
+      wvalid: wvalid
+      wready: wready
+      bid: bid
+      bresp: bresp
+      bvalid: bvalid
+      bready: bready
+  - endpoint: irq
+    kind: event
+    role: sink
+    map:
+      intrpt: intrpt
+  - endpoint: debug
+    kind: physical
+    type: La500Debug
+    map:
+      wbPc: debug0_wb_pc
+      wbRfWen: debug0_wb_rf_wen
+      wbRfWnum: debug0_wb_rf_wnum
+      wbRfWdata: debug0_wb_rf_wdata
+      wbInst: debug0_wb_inst
+  limits:
+  - 配置写死在 src/MyCPUConfig.scala，本版不开放
+  - XPM 存储与乘法器用 vendor/ 下的行为模型；流片要把存储换成 ECOS 的 SRAM 宏
+  - 另有三百多根输出是给 chiplab difftest 看的观测口，本版不声明成端点；break_point、infor_flag、reg_num 三根输入接 0
+  - 决赛之后的三处修改还没过 chiplab 的功能与性能测试
+tasks:
+  spinal:
+    desc: 跑 SpinalHDL 生成 Verilog 并打时序补丁；首次要下载 sbt 与依赖，约五分钟
+    run: bash gen.sh
+targets:
+  foreign:
+    driver: foreign
