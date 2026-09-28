@@ -3,7 +3,8 @@
 .bloop/
 out/
 target/
-project/
+project/*
+!project/build.properties
 .bsp/
 .idea/
 tmp
