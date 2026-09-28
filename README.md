@@ -36,10 +36,12 @@ Part of the [Tape-Out](https://github.com/Tape-Out) IP library, wired up by [`xi
 
 ```console
 $ ran run nop-plus spinal     # gen.sh
-$ ran test nop-plus           # elaborate and check the declaration
+$ ran test nop-plus           # elaborate, check the declaration, run the smoke test
 ```
 
-The gate elaborates the design; it does not run programs on it yet. The configuration is fixed in `src/MyCPUConfig.scala`, and the three hundred or so other difftest outputs are not declared as endpoints.
+The smoke test (`htest/`) turns the caches on through DMW0, runs a sum loop, `mul.w`, `mulh.wu`, a signed multiply, `div.w`, `mod.w`, a byte store read back as a word and 64 words across four lines, then writes the verdict to an uncached address. It runs on Icarus Verilog against a 64 KiB AXI3 memory in about 2200 cycles and needs `binutils-loongarch64-linux-gnu`. With `+trace` it prints every retired PC, exception and AXI request. A memory model one read stage short, a multiplier one stage long or byte enables ignored each make it fail.
+
+The configuration is fixed in `src/MyCPUConfig.scala`, and the three hundred or so other difftest outputs are not declared as endpoints.
 
 ## License
 

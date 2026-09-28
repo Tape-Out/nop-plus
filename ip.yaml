@@ -94,11 +94,17 @@ emit:
   - 配置写死在 src/MyCPUConfig.scala，本版不开放
   - XPM 存储与乘法器用 vendor/ 下的行为模型；流片要把存储换成 ECOS 的 SRAM 宏
   - 另有三百多根输出是给 chiplab difftest 看的观测口，本版不声明成端点；break_point、infor_flag、reg_num 三根输入接 0
-  - 决赛之后的三处修改还没过 chiplab 的功能与性能测试
+  - 冒烟测试只跑一段自写的小程序；决赛之后的三处修改还没过 chiplab 的功能与性能测试
 tasks:
   spinal:
     desc: 跑 SpinalHDL 生成 Verilog 并打时序补丁；首次要下载 sbt 与依赖，约五分钟
     run: bash gen.sh
+  smoke:
+    desc: 开缓存跑一段小程序：加法循环、乘除、字节写读；要 LoongArch 的 binutils 与 iverilog
+    run: bash htest/smoke.sh
+test:
+  upstream:
+  - { name: smoke, task: smoke, timeout: 1800 }
 targets:
   foreign:
     driver: foreign

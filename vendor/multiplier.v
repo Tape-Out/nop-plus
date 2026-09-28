@@ -1,5 +1,5 @@
 // Xilinx mult_gen 的行为模型，参数照 xilinx_ip/multiplier.xci：32×32 无符号、两级流水。
-// 流水级数要与 MyCPUConfig 的 multiplyLatency 一致，执行级按它数拍取结果。
+// 级数不能多于 MyCPUConfig 的 multiplyLatency：执行级数够这么多拍就取结果，其间输入不变，少了无妨。
 module multiplier (
   input             CLK,
   input      [31:0] A,
