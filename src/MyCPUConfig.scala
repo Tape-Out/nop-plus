@@ -40,7 +40,7 @@ final case class DCacheConfig(
 
 final case class BTBConfig(
     sets: Int = 1024,
-    lineSize: Int = 4,
+    lineSize: Int = 64,
     ways: Int = 1,
     rasEntries: Int = 8
 ) extends CacheBasicConfig {
