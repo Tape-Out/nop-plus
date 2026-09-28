@@ -84,6 +84,7 @@ object LoongArch {
 
   val RDCNTVL = MakeMaskedLiteral("0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0" + Rj() + Rd())
   val RDCNTVH = MakeMaskedLiteral("0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 1" + "0 0 0 0 0" + Rd())
+  val CPUCFG = MakeMaskedLiteral("0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 1 1" + Rj() + Rd())
 
   val CACOP = MakeMaskedLiteral("0 0 0 0 0 1 1 0 0 0" + Bits(12) + Rj() + Bits(5)) // 4 downto 0
   val PRELD = MakeMaskedLiteral("0 0 1 0 1 0 1 0 1 1" + Bits(12) + Rj() + Bits(5)) // Not used :)

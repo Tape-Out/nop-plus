@@ -479,7 +479,9 @@ class DecoderArray(config: MyCPUConfig, val popPorts: Vec[Stream[InstBufferEntry
     // Timer
     addAll(
       LoongArch.RDCNTVL -> Seq(fuType -> FUType.TIMER, isRegWrite -> True),
-      LoongArch.RDCNTVH -> Seq(fuType -> FUType.TIMER, isRegWrite -> True, readTimer64H -> True)
+      LoongArch.RDCNTVH -> Seq(fuType -> FUType.TIMER, isRegWrite -> True, readTimer64H -> True),
+      // 复用 rdcntvh 读计数器高位(每次板测复位后=0), 使 cpucfg 返 0, 让 perf/start.S 判无 cache 而跳过 cache-init
+      LoongArch.CPUCFG -> Seq(fuType -> FUType.TIMER, isRegWrite -> True, readTimer64H -> True)
     )
 
     addAll(
